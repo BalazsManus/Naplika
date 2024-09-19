@@ -16,6 +16,8 @@ const initializeStore = async () => {
 const path = require('node:path');
 const fs = require("node:fs");
 
+app.commandLine.appendSwitch('--enable-features', 'OverlayScrollbar')
+
 let isSingleInstance = app.requestSingleInstanceLock()
 if (!isSingleInstance) {
     app.quit();
@@ -168,7 +170,6 @@ const createWindow = () => {
         webPreferences: {
             preload: path.join(__dirname, 'bridge.js'),
             contextIsolation: true,
-            enableBlinkFeatures: 'OverlayScrollbars',
             defaultEncoding: 'UTF-8',
         }
     })
