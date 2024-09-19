@@ -1,0 +1,33 @@
+{
+  "name": "naplika",
+  "version": "1.0.0",
+  "description": "Naplika, Alternatív e-Kréta kliens",
+  "main": "main.js",
+  "scripts": {
+    "test": "electron .",
+    "build-win": "electron-builder --win "
+  },
+  "build": {
+    "appId": "hu.balazsmanus.naplika",
+    "productName": "Naplika",
+    "win": {
+      "target": "msi",
+      "icon": "build/icon.ico"
+    },
+    "msi": {
+      "createDesktopShortcut": false,
+      "oneClick": false,
+      "runAfterFinish": false
+    }
+  },
+  "author": "BalazsManus",
+  "license": "MIT",
+  "dependencies": {
+    "electron-store": "^10.0.0",
+    "node-machine-id": "^1.1.12"
+  },
+  "devDependencies": {
+    "electron": "^32.1.1",
+    "electron-builder": "^25.0.5"
+  }
+}

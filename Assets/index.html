@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ">
+    <link rel="stylesheet" href="./main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kezdőképernyő</title>
+</head>
+<body class="main">
+<div class="right">
+    <img src="./Naplika.svg">
+    <div class="buttoncontainer">
+        <a class="add" href="https://intezmenykereso.e-kreta.hu" title="Fiók hozzáadása">
+            <img src="./account_add.svg" alt="Fiók hozzáadása">
+        </a>
+    </div>
+
+</div>
+
+<div class="left">
+    <h2>Bejelentkezett fiókok:</h2>
+    <ul id="loginaccounts">
+        
+    </ul>
+</div>
+<script>
+    const accountsDiv = document.getElementById('loginaccounts')
+    window.addEventListener('DOMContentLoaded', (event) => {
+        window.electronAPI.getAccounts().then(accounts => {
+            accounts.forEach(account => {
+                for (const [key, value] of Object.entries(account)) {
+                    const li = document.createElement('li')
+                    li.innerHTML = `${key}: ${value}`
+                    accountsDiv.appendChild(li);
+                    li.textContent = `${key}: ID = ${value.id}`;
+                    accountsDiv.appendChild(li);
+                }
+            })
+        }).catch(err => {
+            console.error(err)
+        })
+    })
+</script>
+</body>
+</html>

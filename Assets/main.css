@@ -1,0 +1,48 @@
+body.main {
+    background-color: #1E2326;
+    font-family: sans-serif;
+    color: #D3C6AA;
+    overflow: hidden;
+}
+div.right {
+    float: right;
+}
+div.left {
+    float: left;
+}
+.right img {
+    height: 140px;
+}
+.buttoncontainer {
+    width: 80px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin-right: 0;
+    position: absolute;
+    right: -10px;
+}
+
+.buttoncontainer a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    transition: all 0.2s ease-in-out;
+}
+
+.buttoncontainer a img {
+    width: 30px;
+    height: 30px;
+}
+.buttoncontainer .add {
+    background: #3C4841;
+    border-radius: 10px 0 0 10px;
+}
+
+.buttoncontainer a:hover {
+    width: 130%;
+    transform: translateX(-30%);
+    border-radius: 10px 0 0 10px;
+}
