@@ -1,20 +1,9 @@
-const { app, BrowserWindow, ipcMain, nativeTheme, Menu, MenuItem, session, dialog } = require('electron');
-const { machineIdSync } = require('node-machine-id');
-
-let Store;
-let store;
-const initializeStore = async () => {
-    const electronStore = await import('electron-store');
-    Store = electronStore.default;
-    store = new Store({ encryptionKey: machineIdSync(), clearInvalidConfig: true });
-    
-    if (!store.has('accounts')) {
-        store.set('accounts', []);
-    }
-}
-
+const {app, BrowserWindow, nativeTheme, Menu, MenuItem, session, dialog} = require('electron');
 const path = require('node:path');
+const { fork } = require('node:child_process');
+
 const fs = require("node:fs");
+const child_process = require("node:child_process");
 
 app.commandLine.appendSwitch('--enable-features', 'OverlayScrollbar')
 
@@ -175,35 +164,57 @@ const createWindow = () => {
     })
 
     mainWindow.loadFile(path.join(__dirname, '/Assets/index.html'))
-    
+
     mainWindow.webContents.on('page-title-updated', (e) => {
         e.preventDefault();
         const title = mainWindow.webContents.getTitle();
         mainWindow.setTitle("Naplika - " + title);
     });
+    
 }
 
 app.whenReady().then(async () => {
-    await initializeStore();
     createWindow();
-
+    
     nativeTheme.themeSource = 'dark';
     nativeTheme.shouldUseDarkColors = true;
-    
+
     Menu.setApplicationMenu(menuBar);
+
+    const blacklist = [
+        "elastic-apm-rum.umd.min.js",
+        "rum-agent.min.js",
+        "analytics.js",
+        "gtag/js"
+    ];
+
+    session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
+        const url = new URL(details.url);
+        const pathname = url.pathname.split('?')[0];
+
+        if (blacklist.some(entry => pathname.includes(entry))) {
+            callback({cancel: true});
+        } else {
+            callback({});
+        }
+    });
+
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        const headers = details.responseHeaders;
+        delete headers['Content-Security-Policy'];
+        delete headers['content-security-policy']
+        delete headers['X-Content-Security-Policy'];
+        
+        callback({ responseHeaders: headers });
+    });
     
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
+    
+    fork(path.join(__dirname, 'server.js'), [app.getPath('userData')]);
 })
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
-
-ipcMain.handle('get-store-data', async (event, key) => {
-    return store.get(key);
-});
-ipcMain.handle('set-store-data', async (event, key, value) => {
-    return store.set(key, value);
-});

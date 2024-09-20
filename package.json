@@ -23,7 +23,10 @@
   "author": "BalazsManus",
   "license": "MIT",
   "dependencies": {
-    "electron-store": "^10.0.0",
+    "@naplika/instituteinjector": "file:src/instituteInjector",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
     "node-machine-id": "^1.1.12"
   },
   "devDependencies": {
