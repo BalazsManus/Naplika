@@ -3,7 +3,6 @@ const path = require('node:path');
 const { fork } = require('node:child_process');
 
 const fs = require("node:fs");
-const child_process = require("node:child_process");
 
 app.commandLine.appendSwitch('--enable-features', 'OverlayScrollbar')
 

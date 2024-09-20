@@ -2,7 +2,6 @@ const { contextBridge } = require('electron');
 
 const startPage = "/Assets/index.html";
 const instituteFinder = "https://intezmenykereso.e-kreta.hu";
-const dash = "/Adminisztracio/BelepesKezelo";
 const loginPage = "https://idp.e-kreta.hu/Account/Login";
 
 let localPage = false;
@@ -63,7 +62,7 @@ function getAccounts() {
                 instituteList.push(key);
             }
             for (let institute of instituteList) {
-                const school = `<div id="${institute}"><h3>${institute}</h3></div>`;
+                const school = `<div><h3>${institute}</h3><ul id="${institute}"></ul></div>`;
                 accountsDiv.insertAdjacentHTML('beforeend', school);
                 let accounts = [];
                 fetch(`http://localhost:50019/get/accounts.institutes.${institute}`).then(res => res.json())
@@ -71,12 +70,12 @@ function getAccounts() {
                         for (let key in data.value) {
                             accounts.push(key);
                         }
+                        for (let account of accounts) {
+                            const accountDiv = document.getElementById(institute);
+                            const accountElement = `<li>${account}</li>`;
+                            accountDiv.insertAdjacentHTML('beforeend', accountElement);
+                        }
                     })
-                for (let account of accounts) {
-                    const accountDiv = document.getElementById(institute);
-                    const accountElement = `<div id="${account}"><h4>${account}</h4></div>`;
-                    accountDiv.insertAdjacentHTML('beforeend', accountElement);
-                }
             }
         })
 }
