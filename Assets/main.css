@@ -3,6 +3,7 @@ body.main {
     font-family: sans-serif;
     color: #D3C6AA;
     overflow: hidden;
+    user-select: none;
 }
 div.right {
     float: right;

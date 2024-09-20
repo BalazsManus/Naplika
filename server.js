@@ -10,8 +10,18 @@ const port = 50019;
 const userDataPath = process.argv[2];
 const confpath = path.join(userDataPath, 'config.json');
 
+function localOnly(req, res, next) {
+    const ip = req.ip || req.connection.remoteAddress;
+    if (ip === '::1' || ip === '127.0.0.1') {
+        next();
+    } else {
+        res.status(403).send('Forbidden');
+    }
+}
+
 server.use(bodyParser.json());
 server.use(cors());
+server.use(localOnly);
 
 let db = loadDB();
 
@@ -89,5 +99,5 @@ server.get('/get/:key', (req, res) => {
 
 server.listen(port, async () => {
     console.log(`Overlay DB server started..., Port: ${port}`);
-    console.warn('Do not open port or your data might get leaked.');
+    console.warn("Do not open this port if you don't want to expose your data!");
 });

@@ -162,6 +162,9 @@ const createWindow = () => {
         }
     })
 
+    const ua = mainWindow.webContents.getUserAgent();
+    mainWindow.webContents.setUserAgent(ua + ` Naplika/${app.getVersion()}`);
+    
     mainWindow.loadFile(path.join(__dirname, '/Assets/index.html'))
 
     mainWindow.webContents.on('page-title-updated', (e) => {

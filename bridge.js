@@ -24,12 +24,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function saveInstitute() {
+async function saveInstitute() {
     const inputParent = document.getElementById('institute-selector-institute-autocomplete');
     const input = inputParent.querySelector('input[class="dropdown-toggle autocomplete form-control"]');
     let institute = input.value;
     institute = institute.split('(')[1].split(' -')[0];
+    const alreadyExists = await checkForInstitute(institute); // Await the result of checkForInstitute
     if (institute.length > 0) {
+        if (alreadyExists) {
+            return;
+        }
         const response = window.confirm(`Szeretnéd menteni a ${institute} nevű iskolát?`);
         if (response) {
             fetch('http://localhost:50019/save', {
@@ -89,9 +93,6 @@ function interceptLogin() {
     url = decodeURIComponent(url);
     url = decodeURIComponent(url);
     currentInstitute = url.split('&redirect_uri=https://')[1].split('.e-kreta.hu')[0];
-    tryLoginSave();
-}
-function tryLoginSave() {
     const result = window.confirm(`Szeretnéd elmenteni a bejelentkezési adataidat?`);
     if (result) {
         fetch('http://localhost:50019/save', {
@@ -104,7 +105,23 @@ function tryLoginSave() {
                 value: password
             })
         })
-    } 
+    }
+}
+
+async function checkForInstitute(institute) {
+    const instituteList = [];
+    const response = await fetch('http://localhost:50019/get/accounts.institutes');
+    const data = await response.json();
+    for (let key in data.value) {
+        instituteList.push(key);
+    }
+    for (let inst of instituteList) {
+        if (inst === institute) {
+            console.log('exists');
+            return true;
+        }
+    }
+    return false;
 }
 
 window.saveInstitute = saveInstitute;
